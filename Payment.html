@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Verification</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background: linear-gradient(45deg, #f06, #f90, #09f, #3cf, #93f); /* Colorful gradient */
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            min-height: 100vh; /* Ensure full viewport height */
+            display: flex;
+            flex-direction: column; /* Arrange header and content vertically */
+            align-items: flex-start; /* Align header to the left */
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            background-color:black;
+            padding: 20px;
+            width: 90%;
+            max-width: 2000px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 30px;
+            display: flex; /* Enable flexbox for alignment */
+            justify-content: flex-start; /* Push content to the left */
+            align-items: center; /* Vertically align items */
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            max-height: 70px; /* Adjusted size */
+            margin-right: 20px; /* Add margin to the right of the logo */
+        }
+
+        .colorful-name {
+            font-size: 1.8em; /* Adjusted size */
+            margin: 0;
+            animation: color-change 5s infinite alternate; /* Apply color change animation */
+        }
+
+        @keyframes color-change {
+            0% { color: #ff6b6b; }
+            25% { color: #feca57; }
+            50% { color: #48dbfb; }
+            75% { color: #6ab04c; }
+            100% { color: #e056fd; }
+        }
+
+        .payment-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            margin-bottom: 30px; /* Add some space below the container */
+            /* New styles to center the payment container */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .accepted-cards {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .accepted-cards img {
+            width: 50px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="month"],
+        input[type="password"],
+        input[type="email"],
+        input[type="tel"] {
+            width: calc(100% - 12px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .expiry-cvv {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .payment-status {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        .processing {
+            color: orange;
+        }
+        #verificationStep {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: rgba(249, 249, 249, 0.9);
+            display: none;
+            text-align: center;
+        }
+        #verificationStep h3 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        #verificationStep p {
+            margin-bottom: 10px;
+        }
+        #otpInput {
+            width: calc(50% - 12px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-right: 10px;
+        }
+        #verifyButton {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #verifyButton:hover {
+            background-color: #1e7e34;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            max-height: 90px;
+            margin-right: 60px;
+        }
+
+        .colorful-name {
+            font-size: 2em;
+            margin: 0;
+            animation: color-change 5s infinite alternate;
+        }
+
+        @keyframes color-change {
+            0% { color: #ff6b6b; }
+            25% { color: #feca57; }
+            50% { color: #48dbfb; }
+            75% { color: #6ab04c; }
+            100% { color: #e056fd; }
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 5;
+            margin: 5;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-right: 30px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #feca57;
+        }
+
+        .search-bar {
+            display: flex;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1em;
+        }
+
+        .search-bar button[type="submit"] {
+            background-color: #feca57;
+            color: white;
+            border: none;
+            margin-right: 20px;
+            padding: 10px 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button[type="submit"]:hover {
+            background-color: #e056fd;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+            color: #333;
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
+            flex-grow: 1;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: -1;
+            animation: change 10s infinite ease-in-out;
+        }
+
+        .hero-section h1,
+        .hero-section p {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        @keyframes change {
+            0%  { background-image: url(image1.jpg); }
+            20% { background-image: url(image2.jpg); }
+            40% { background-image: url(image3.jpg); }
+            60% { background-image: url(image4.jpg); }
+            80% { background-image: url(image5.jpg); }
+            100% { background-image: url(image6.jpg); }
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .background-animation {
+            display: none;
+        }
+
+        .background-animation.gradient {
+            background-size: 20% 20%;
+            animation: animated-bg 30s ease infinite;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        #location-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        #location-section h2 {
+            color: #333;
+            border-bottom: 2px solid #e44d26;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        header {
+            padding: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-height: 90px;
+            margin-right: 20px;
+        }
+
+        .colorful-name {
+            font-size: 1.5em;
+            margin: 0;
+            animation: color-change 5s infinite alternate;
+        }
+
+        @keyframes color-change {
+            0% { color: #ff6b6b; }
+            25% { color: #feca57; }
+            50% { color: #48dbfb; }
+            75% { color: #6ab04c; }
+            100% { color: #e056fd; }
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #game-popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #game-popup {
+            background-image: url(taco-pattern.jpg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            width: 300px;
+        }
+
+        #close-game {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            color: #555;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        #close-game:hover {
+            color: #000;
+        }
+
+        #wheel-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 20px auto;
+            position: relative;
+            border: 4px solid #333;
+            transition: transform 5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                #f6d365 0%,
+                #fda085 20%,
+                #a7d9ed 40%,
+                #8fdfd3 60%,
+                #f9b7ff 80%,
+                #f6d365 100%
+            );
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: #333;
+            user-select: none;
+        }
+
+        #spin-button {
+            padding: 15px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            background-color: #e44d26;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #spin-button:hover {
+            background-color: #c83d1a;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #win-message-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222831;
+            font-family: 'Montserrat', sans-serif;
+        }
+        form {
+            width: 600px;
+            margin: 100px auto 0 auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px 0 #38475e, 0 4px 8px 0 #30475e;
+            color: #fff;
+        }
+        h1 {
+            text-align: '';
+        }
+        .box1 {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 15px;
+            box-sizing: border-box;
+            margin: 10px 0 15px 0;
+            background-color: #30475e;
+        }
+        .div1 {
+            display: inline-block;
+        }
+        .box2 {
+            width: 85%;
+            padding: 10px;
+            border: none;
+            border-radius: 15px;
+            margin: 10px 0 15px 0;
+            background-color: #30475e;
+            font-size: 13px;
+        }
+        .btn {
+            width: 49%;
+            padding: 10px;
+            border: none;
+            border-radius: 15px;
+            background-color: #30475e;
+            font-size: 16px;
+            color: #fff;
+        }
+        @media screen and ( max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+            form {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .div1 {
+                display: block;
+            }
+            .box2 {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            width: 100%;
+            background-color: #d87635c0;
+        }
+        header {
+            padding: 0.1px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="Bernas Delight.html">
+                <img src="Bernaslogo.png" alt="Berna's Fine Tacos & Grill Logo" class="logo">
+            </a>
+            <h1 class="colorful-name">Berna's Delicios Tacos & Hotdogs</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="Bernas Delight.html">Home</a></li>
+                <li><a href="mission.html">Mission & Vision</a></li>
+                <li><a href="Menu.html">Menu</a></li>
+                <li><a href="About Us.html">About Us</a></li>
+                <li><a href="Location.html">Location</a></li>
+                <li><a href="Employees.html"> Employees</a></li>
+                <li><a href="Contact.html">Contact Us</a></li>
+                <li><a href="payment.html">Payment Section</a></li>
+                <li><a href="game.html" id="gameNavLink">Game</a></li>
+            </ul>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="menuSearch" placeholder="Search Menu...">
+            <button type="submit" id="searchButton">Search</button>
+        </div>
+        </header>
+        <div id="search-results-container" class="hidden">
+        </div>
+        <div id="no-search-results" class="hidden">
+        <p>No menu items found matching your search.</p>
+        </div>
+        </main>
+        
+        <div id="game-popup-container" class="hidden">
+        <div id="game-popup">
+        <button id="close-game">X</button>
+        <h2>Spin the Wheel for a Discount!</h2>
+        <div id="wheel-container">
+            <div id="wheel"></div>
+        </div>
+        <button id="spin-button">Spin!</button>
+        <div id="result"></div>
+        <div id="win-message-container">
+            Congratulations! You won: <span id="winning-prize"></span>
+        </div>
+        </div>
+        </div>
+    </header>
+    <div class="payment-container">
+        <h2>Secure Payment</h2>
+        <div class="accepted-cards">
+            <p>Accepted Cards:</p>
+            <img src="mastercard.jpg" alt="Mastercard">
+            <img src="visacard.jpg" alt="Visa">
+            <img src="americancard.jpg" alt="American Express">
+        </div>
+        <form id="paymentForm">
+            <h3>Customer Information</h3>
+            <div class="form-group">
+                <label for="cardHolder">Card Holder Name</label>
+                <input type="text" id="cardHolder" name="cardHolder" placeholder="Name on card" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Your email address" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+            </div>
+            <div class="form-group">
+                <label for="billingAddress">Billing Address (Optional)</label>
+                <input type="text" id="billingAddress" name="billingAddress" placeholder="Street address, city, state, zip">
+            </div>
+
+            <h3>Payment Details</h3>
+            <div class="form-group">
+                <label for="amount">Amount to Pay</label>
+                <input type="number" id="amount" name="amount" placeholder="Enter amount (e.g., 10.00)" required>
+            </div>
+
+            <h3>Card Details</h3>
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="Enter card number" required>
+            </div>
+            <div class="card-details">
+                <div class="form-group">
+                    <label for="expiryMonth">Expiry Date</label>
+                    <input type="month" id="expiryMonth" name="expiryMonth" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="password" id="cvv" name="cvv" placeholder="CVV" maxlength="4" required>
+                </div>
+            </div>
+
+            <button type="button" onclick="validateAndInitiate()">Pay Now</button>
+            <p id="formError" class="error-message" style="display: none;"></p>
+        </form>
+        <div id="paymentStatus" class="payment-status"></div>
+
+        <div id="verificationStep">
+            <h3>Verify Your Payment</h3>
+            <p>An OTP (One-Time Password) has been sent to your registered mobile number or email address.</p>
+            <div style="text-align: center;">
+                <input type="text" id="otpInput" placeholder="Enter OTP">
+                <button type="button" id="verifyButton" onclick="verifyOTP()">Verify OTP</button>
+            </div>
+            <p id="verificationStatus" style="text-align: center; margin-top: 10px;"></p>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Berna's Delicios Tacos & Hotdogs | <a href="terms.html">Terms of Service</a> | <a href="privacy.html">Privacy Policy</a></p>
+        </div>
+    </footer>
+    <script>
+        let paymentAmount; // Store the payment amount
+
+        // Initially hide the verification step and error message
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('verificationStep').style.display = 'none';
+            document.getElementById('formError').style.display = 'none';
+        });
+
+        function isCardExpired(expiryMonth) {
+            if (!expiryMonth) {
+                return true; // Consider empty as expired for simplicity
+            }
+
+            const [expiryYear, expiryMonthNum] = expiryMonth.split('-');
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+
+            const expYear = parseInt(expiryYear, 10);
+            const expMonth = parseInt(expiryMonthNum, 10);
+
+            if (expYear < currentYear) {
+                return true;
+            }
+            if (expYear === currentYear && expMonth < currentMonth) {
+                return true;
+            }
+            return false;
+        }
+
+        function validateAndInitiate() {
+            const cardHolder = document.getElementById('cardHolder').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const amount = document.getElementById('amount').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiryMonth = document.getElementById('expiryMonth').value;
+            const cvv = document.getElementById('cvv').value;
+
+            if (!cardHolder || !email || !phone || !amount || !cardNumber || !expiryMonth || !cvv) {
+                document.getElementById('formError').textContent = "Please fill in all required customer and payment information (including email and phone).";
+                document.getElementById('formError').style.display = 'block';
+                return;
+            }
+
+            // Basic email validation (you might want a more robust one)
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                document.getElementById('formError').textContent = "Please enter a valid email address.";
+                document.getElementById('formError').style.display = 'block';
+                return;
+            }
+
+            // Basic phone number validation (you might want a more specific one)
+            if (!/^\d+$/.test(phone)) {
+                document.getElementById('formError').textContent = "Please enter a valid phone number (numbers only).";
+                document.getElementById('formError').style.display = 'block';
+                return;
+            }
+
+            if (isCardExpired(expiryMonth)) {
+                document.getElementById('formError').textContent = "The card expiry date is invalid.";
+                document.getElementById('formError').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('formError').style.display = 'none';
+            initiatePayment();
+        }
+
+        function initiatePayment() {
+            const amountInput = document.getElementById('amount');
+            paymentAmount = amountInput.value;
+            const emailAddress = document.getElementById('email').value; // Get the email
+            const phoneNumber = document.getElementById('phone').value; // Get the phone number
+
+            const paymentStatusDiv = document.getElementById('paymentStatus');
+            paymentStatusDiv.textContent = `Processing payment of $${paymentAmount}...`;
+            paymentStatusDiv.className = "payment-status processing";
+
+            // Simulate initial payment processing (e.g., sending data to a backend - NOT REAL)
+            setTimeout(() => {
+                const isInitialProcessingSuccessful = Math.random() < 0.9; // Simulate higher success rate
+
+                if (isInitialProcessingSuccessful) {
+                    paymentStatusDiv.textContent = "Payment initiated. Proceeding to verification...";
+                    paymentStatusDiv.className = "payment-status processing";
+                    document.getElementById('verificationStep').style.display = 'block'; // Show verification
+                    document.getElementById('paymentForm').style.display = 'none'; // Hide the form
+                    // In a real scenario, you might send the OTP to the provided email/phone
+                    console.log(`Simulated OTP sent to: ${emailAddress} and ${phoneNumber}`);
+                } else {
+                    paymentStatusDiv.textContent = "Payment initiation failed. Please try again.";
+                    paymentStatusDiv.className = "payment-status error";
+                }
+            }, 2000); // Simulate processing time
+        }
+
+        function verifyOTP() {
+            const otpInput = document.getElementById('otpInput');
+            const enteredOTP = otpInput.value;
+            const verificationStatusDiv = document.getElementById('verificationStatus');
+
+            verificationStatusDiv.textContent = "Verifying OTP...";
+            verificationStatusDiv.className = "processing";
+
+            // Simulate OTP verification against a "sent" OTP (NOT REAL)
+            const simulatedOTP = "123456"; // In a real system, this would be dynamically generated
+
+            setTimeout(() => {
+                if (enteredOTP === simulatedOTP) {
+                    verificationStatusDiv.textContent = `Payment of $${paymentAmount} Successful!`;
+                    verificationStatusDiv.className = "success";
+                    document.getElementById('verificationStep').innerHTML = `<h3 class="success">Payment Successful!</h3><p>Your payment of $${paymentAmount} has been processed successfully.</p>`;
+                    // In a real scenario, you would redirect to a success page
+                } else {
+                    verificationStatusDiv.textContent = "OTP verification failed. Please try again.";
+                    verificationStatusDiv.className = "error";
+                }
+            }, 2500); // Simulate verification time
+        }
+
+        // Add visual feedback on "Pay Now" button click
+        const payButton = document.querySelector('button[type="button"]');
+        payButton.addEventListener('click', () => {
+            payButton.classList.add('clicked');
+            setTimeout(() => {
+                payButton.classList.remove('clicked');
+            }, 200); // Briefly add a class for visual feedback
+        });
+
+        // Add visual feedback on "Verify OTP" button click
+        const verifyButton = document.getElementById('verifyButton');
+        if (verifyButton) {
+            verifyButton.addEventListener('click', () => {
+                verifyButton.classList.add('clicked');
+                setTimeout(() => {
+                    verifyButton.classList.remove('clicked');
+                }, 200); // Briefly add a class for visual feedback
+            });
+        }
+    </script>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const background = document.querySelector('.background-animation');
+        background.classList.add('gradient');
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const gameNavLink = document.getElementById('gameNavLink');
+        const gamePopupContainer = document.getElementById('game-popup-container');
+        const closeGameButton = document.getElementById('close-game');
+        const wheelContainer = document.getElementById('wheel-container');
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spin-button');
+        const resultDiv = document.getElementById('result');
+        const winMessageContainer = document.getElementById('win-message-container');
+        const winningPrizeSpan = document.getElementById('winning-prize');
+        const menuSearchInput = document.getElementById('menuSearch');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsContainer = document.getElementById('search-results-container');
+        const noSearchResults = document.getElementById('no-search-results');
+
+        const menuItems = [
+            { name: "Al Pastor Taco", price: 3.50, image: "taco1.jpg", description: "Marinated pork, pineapple, onions, cilantro." },
+            { name: "Carne Asada Taco", price: 4.00, image: "taco2.jpg", description: "Grilled steak, onions, cilantro, lime." },
+            { name: "Pollo Asado Taco", price: 3.75, image: "taco3.jpg", description: "Grilled chicken, choice of toppings." },
+            { name: "Carnitas Taco", price: 4.25, image: "taco4.jpg", description: "Slow-cooked pulled pork, seasoned." },
+            { name: "Fish Taco", price: 4.50, image: "taco5.jpg", description: "Battered/grilled fish, slaw, creamy sauce." },
+            { name: "Shrimp Taco", price: 4.75, image: "taco6.jpg", description: "Grilled/sautéed shrimp, flavorful spices." },
+            { name: "Vegetarian Taco", price: 3.50, image: "taco7.jpg", description: "Grilled veggies, beans, cheese." },
+            { name: "Lengua Taco", price: 4.50, image: "taco8.jpg", description: "Tender and flavorful beef tongue." },
+            { name: "Barbacoa Taco", price: 4.25, image: "taco9.jpg", description: "Slow-cooked, shredded, rich beef." },
+            { name: "Chorizo Taco", price: 3.75, image: "taco10.jpg", description: "Spicy Mexican sausage, crumbled." },
+            { name: "Classic Hot Dog", price: 3.00, image: "hotdog1.jpg", description: "Beef hot dog, mustard, ketchup, relish." },
+            { name: "Chili Cheese Dog", price: 4.00, image: "hotdog2.jpg", description: "Beef hot dog, chili, shredded cheese." },
+            { name: "New York Style Dog", price: 3.50, image: "hotdog3.jpg", description: "Beef hot dog, sauerkraut, spicy brown mustard." },
+            { name: "Chicago Style Dog", price: 4.50, image: "hotdog4.jpg", description: "Beef hot dog, mustard, relish, onion, tomato, pickle, sport peppers, celery salt." },
+            { name: "Mexican Hot Dog", price: 5.00, image: "hotdog5.jpg", description: "Beef hot dog with jalapeños, onions, tomatoes, and spices." },
+            { name: "Cola", price: 2.00, image: "drink1.jpg", description: "Classic carbonated cola beverage." },
+            { name: "Lemon-Lime Soda", price: 2.00, image: "drink2.jpg", description: "Refreshing lemon and lime flavored soda." },
+            { name: "Orange Soda", price: 2.00, image: "drink3.jpg", description: "Sweet and bubbly orange flavored soda." },
+            { name: "Iced Tea", price: 2.50, image: "drink4.jpg", description: "Chilled black tea, served plain or sweetened." },
+            { name: "Pepsi", price: 2.00, image: "drink5.jpg", description: "Another popular carbonated cola." }
+        ];
+
+        let rotation = 0;
+        let spinning = false;
+        winMessageContainer.classList.remove('show');
+
+        function spinWheel() {
+            if (spinning) return;
+            spinning = true;
+            resultDiv.textContent = '';
+            winMessageContainer.classList.remove('show');
+
+            const randomSpin = Math.floor(Math.random() * 3600) + 3600;
+            rotation += randomSpin;
+            wheelContainer.style.transform = `rotate(${rotation}deg)`;
+
+            setTimeout(() => {
+                spinning = false;
+                const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
+                const degreesPerPrize = 360 / prizes.length;
+                const winningIndex = Math.floor((rotation % 360) / degreesPerPrize);
+                const winningPrize = prizes[prizes.length - 1 - winningIndex];
+
+                resultDiv.textContent = `You landed on: ${winningPrize}!`;
+
+                if (winningPrize !== "Try Again") {
+                    winningPrizeSpan.textContent = winningPrize;
+                    winMessageContainer.classList.add('show');
+                } else {
+                    winMessageContainer.classList.remove('show');
+                }
+
+            }, 5000);
+        }
+
+        function createWheelSegments() {
+            const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
+            const numSegments = prizes.length;
+            const degreesPerSegment = 360 / numSegments;
+            wheel.innerHTML = '';
+            for (let i = 0; i < numSegments; i++) {
+                const segment = document.createElement('div');
+                segment.style.position = 'absolute';
+                segment.style.width = '100%';
+                segment.style.height = '100%';
+                segment.style.transformOrigin = 'center center';
+                segment.style.transform = `rotate(${i * degreesPerSegment}deg)`;
+                segment.style.display = 'flex';
+                segment.style.justifyContent = 'flex-end';
+                segment.style.alignItems = 'center';
+                segment.style.paddingRight = '20px';
+                segment.style.fontSize = '0.8em';
+                segment.style.pointerEvents = 'none';
+                segment.textContent = prizes[i];
+                wheel.appendChild(segment);
+            }
+        }
+
+        if (gameNavLink && gamePopupContainer) {
+            gameNavLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                gamePopupContainer.classList.remove('hidden');
+                createWheelSegments();
+                rotation = 0;
+                wheelContainer.style.transform = `rotate(0deg)`;
+                resultDiv.textContent = '';
+                winMessageContainer.classList.remove('show');
+            });
+        }
+
+        if (closeGameButton && gamePopupContainer) {
+            closeGameButton.addEventListener('click', function() {
+                gamePopupContainer.classList.add('hidden');
+                spinning = false;
+            });
+        }
+
+        if (spinButton && wheelContainer) {
+            spinButton.addEventListener('click', spinWheel);
+        }
+
+        function displaySearchResults(results) {
+            searchResultsContainer.innerHTML = '';
+            if (results.length > 0) {
+                results.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('search-item');
+                    const img = document.createElement('img');
+                    img.src = item.image;
+                    img.alt = item.name;
+                    const h3 = document.createElement('h3');
+                    h3.textContent = item.name;
+                    const pDesc = document.createElement('p');
+                    pDesc.classList.add('description');
+                    pDesc.textContent = item.description;
+                    const pPrice = document.createElement('p');
+                    pPrice.classList.add('price');
+                    pPrice.textContent = `$${item.price.toFixed(2)}`;
+                    const addButton = document.createElement('button');
+                    addButton.classList.add('add-to-cart');
+                    addButton.dataset.name = item.name;
+                    addButton.dataset.price = item.price;
+                    addButton.textContent = 'Add to Cart';
+                    addButton.addEventListener('click', function() {
+                        const itemName = this.dataset.name;
+                        const itemPrice = parseFloat(this.dataset.price);
+                        alert(`Added "${itemName}" to cart for $${itemPrice.toFixed(2)}`);
+                        // In a real application, you would handle adding to a cart array or updating a cart display here.
+                    });
+
+                    itemDiv.appendChild(img);
+                    itemDiv.appendChild(h3);
+                    itemDiv.appendChild(pDesc);
+                    itemDiv.appendChild(pPrice);
+                    itemDiv.appendChild(addButton);
+                    searchResultsContainer.appendChild(itemDiv);
+                });
+                searchResultsContainer.classList.remove('hidden');
+                noSearchResults.classList.add('hidden');
+            } else {
+                searchResultsContainer.classList.add('hidden');
+                noSearchResults.classList.remove('hidden');
+            }
+        }
+
+        if (searchButton && menuSearchInput) {
+            searchButton.addEventListener('click', function() {
+                const searchTerm = menuSearchInput.value.toLowerCase();
+                const foundItems = menuItems.filter(item => item.name.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm));
+                displaySearchResults(foundItems);
+            });
+
+            menuSearchInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    searchButton.click();
+                }
+            });
+        }
+    });
+</script>
+</html>
