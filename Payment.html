@@ -72,13 +72,14 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
             text-align: center;
-            margin-bottom: 30px; /* Add some space below the container */
+            margin-bottom: 40px; /* Add some space below the container */
             /* New styles to center the payment container */
             margin-left: auto;
             margin-right: auto;
+            margin-top: 195px;
         }
         h2 {
             text-align: center;
@@ -284,7 +285,7 @@
         }
 
         .search-bar input[type="text"] {
-            padding: 10px;
+            padding: 5px;
             border: none;
             border-radius: 5px 0 0 5px;
             font-size: 1em;
@@ -294,7 +295,7 @@
             background-color: #feca57;
             color: white;
             border: none;
-            margin-right: 20px;
+            margin-right: 25px;
             padding: 10px 15px;
             border-radius: 0 5px 5px 0;
             cursor: pointer;
@@ -361,16 +362,6 @@
             z-index: 10;
             width: 100%;
         }
-
-        .background-animation {
-            display: none;
-        }
-
-        .background-animation.gradient {
-            background-size: 20% 20%;
-            animation: animated-bg 30s ease infinite;
-        }
-
         nav ul {
             list-style: none;
             padding: 0;
@@ -394,14 +385,6 @@
             margin-bottom: 15px;
         }
 
-        body {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-        }
 
         header {
             padding: 20px;
@@ -462,14 +445,14 @@
 
         #close-game {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 1px;
+            left: 130px;
             font-size: 1.5em;
             color: #555;
             cursor: pointer;
             border: none;
             background: none;
-            padding: 0;
+            padding: 19px;
         }
 
         #close-game:hover {
@@ -541,12 +524,6 @@
         .hidden {
             display: none !important;
         }
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #222831;
-            font-family: 'Montserrat', sans-serif;
-        }
         form {
             width: 600px;
             margin: 100px auto 0 auto;
@@ -614,11 +591,36 @@
             background-color: #d87635c0;
         }
         header {
-            padding: 0.1px;
-        }
+ padding: 0px;
+background: rgba(0, 0, 0, 0.3);
+ box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+ }
     </style>
 </head>
 <body>
+    
+    <div id="search-results-container" class="hidden">
+        </div>
+        <div id="no-search-results" class="hidden">
+        <p>No menu items found matching your search.</p>
+        </div>
+        </main>
+        
+        <div id="game-popup-container" class="hidden">
+        <div id="game-popup">
+        <button id="close-game">X</button>
+        <h2>Spin the Wheel for a Discount!</h2>
+        <div id="wheel-container">
+            <div id="wheel"></div>
+        </div>
+        <button id="spin-button">Spin!</button>
+        <div id="result"></div>
+        <div id="win-message-container">
+            Congratulations! You won: <span id="winning-prize"></span>
+        </div>
+        </div>
+        </div>
+    </header>
     <header>
         <div class="logo-container">
             <a href="Bernas Delight.html">
@@ -644,28 +646,6 @@
             <button type="submit" id="searchButton">Search</button>
         </div>
         </header>
-        <div id="search-results-container" class="hidden">
-        </div>
-        <div id="no-search-results" class="hidden">
-        <p>No menu items found matching your search.</p>
-        </div>
-        </main>
-        
-        <div id="game-popup-container" class="hidden">
-        <div id="game-popup">
-        <button id="close-game">X</button>
-        <h2>Spin the Wheel for a Discount!</h2>
-        <div id="wheel-container">
-            <div id="wheel"></div>
-        </div>
-        <button id="spin-button">Spin!</button>
-        <div id="result"></div>
-        <div id="win-message-container">
-            Congratulations! You won: <span id="winning-prize"></span>
-        </div>
-        </div>
-        </div>
-    </header>
     <div class="payment-container">
         <h2>Secure Payment</h2>
         <div class="accepted-cards">
@@ -875,188 +855,189 @@
                 }, 200); // Briefly add a class for visual feedback
             });
         }
+        
     </script>
-</body>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const background = document.querySelector('.background-animation');
-        background.classList.add('gradient');
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const gameNavLink = document.getElementById('gameNavLink');
-        const gamePopupContainer = document.getElementById('game-popup-container');
-        const closeGameButton = document.getElementById('close-game');
-        const wheelContainer = document.getElementById('wheel-container');
-        const wheel = document.getElementById('wheel');
-        const spinButton = document.getElementById('spin-button');
-        const resultDiv = document.getElementById('result');
-        const winMessageContainer = document.getElementById('win-message-container');
-        const winningPrizeSpan = document.getElementById('winning-prize');
-        const menuSearchInput = document.getElementById('menuSearch');
-        const searchButton = document.getElementById('searchButton');
-        const searchResultsContainer = document.getElementById('search-results-container');
-        const noSearchResults = document.getElementById('no-search-results');
-
-        const menuItems = [
-            { name: "Al Pastor Taco", price: 3.50, image: "taco1.jpg", description: "Marinated pork, pineapple, onions, cilantro." },
-            { name: "Carne Asada Taco", price: 4.00, image: "taco2.jpg", description: "Grilled steak, onions, cilantro, lime." },
-            { name: "Pollo Asado Taco", price: 3.75, image: "taco3.jpg", description: "Grilled chicken, choice of toppings." },
-            { name: "Carnitas Taco", price: 4.25, image: "taco4.jpg", description: "Slow-cooked pulled pork, seasoned." },
-            { name: "Fish Taco", price: 4.50, image: "taco5.jpg", description: "Battered/grilled fish, slaw, creamy sauce." },
-            { name: "Shrimp Taco", price: 4.75, image: "taco6.jpg", description: "Grilled/sautéed shrimp, flavorful spices." },
-            { name: "Vegetarian Taco", price: 3.50, image: "taco7.jpg", description: "Grilled veggies, beans, cheese." },
-            { name: "Lengua Taco", price: 4.50, image: "taco8.jpg", description: "Tender and flavorful beef tongue." },
-            { name: "Barbacoa Taco", price: 4.25, image: "taco9.jpg", description: "Slow-cooked, shredded, rich beef." },
-            { name: "Chorizo Taco", price: 3.75, image: "taco10.jpg", description: "Spicy Mexican sausage, crumbled." },
-            { name: "Classic Hot Dog", price: 3.00, image: "hotdog1.jpg", description: "Beef hot dog, mustard, ketchup, relish." },
-            { name: "Chili Cheese Dog", price: 4.00, image: "hotdog2.jpg", description: "Beef hot dog, chili, shredded cheese." },
-            { name: "New York Style Dog", price: 3.50, image: "hotdog3.jpg", description: "Beef hot dog, sauerkraut, spicy brown mustard." },
-            { name: "Chicago Style Dog", price: 4.50, image: "hotdog4.jpg", description: "Beef hot dog, mustard, relish, onion, tomato, pickle, sport peppers, celery salt." },
-            { name: "Mexican Hot Dog", price: 5.00, image: "hotdog5.jpg", description: "Beef hot dog with jalapeños, onions, tomatoes, and spices." },
-            { name: "Cola", price: 2.00, image: "drink1.jpg", description: "Classic carbonated cola beverage." },
-            { name: "Lemon-Lime Soda", price: 2.00, image: "drink2.jpg", description: "Refreshing lemon and lime flavored soda." },
-            { name: "Orange Soda", price: 2.00, image: "drink3.jpg", description: "Sweet and bubbly orange flavored soda." },
-            { name: "Iced Tea", price: 2.50, image: "drink4.jpg", description: "Chilled black tea, served plain or sweetened." },
-            { name: "Pepsi", price: 2.00, image: "drink5.jpg", description: "Another popular carbonated cola." }
-        ];
-
-        let rotation = 0;
-        let spinning = false;
-        winMessageContainer.classList.remove('show');
-
-        function spinWheel() {
-            if (spinning) return;
-            spinning = true;
-            resultDiv.textContent = '';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const background = document.querySelector('.background-animation');
+            background.classList.add('gradient');
+        });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameNavLink = document.getElementById('gameNavLink');
+            const gamePopupContainer = document.getElementById('game-popup-container');
+            const closeGameButton = document.getElementById('close-game');
+            const wheelContainer = document.getElementById('wheel-container');
+            const wheel = document.getElementById('wheel');
+            const spinButton = document.getElementById('spin-button');
+            const resultDiv = document.getElementById('result');
+            const winMessageContainer = document.getElementById('win-message-container');
+            const winningPrizeSpan = document.getElementById('winning-prize');
+            const menuSearchInput = document.getElementById('menuSearch');
+            const searchButton = document.getElementById('searchButton');
+            const searchResultsContainer = document.getElementById('search-results-container');
+            const noSearchResults = document.getElementById('no-search-results');
+    
+            const menuItems = [
+                { name: "Al Pastor Taco", price: 3.50, image: "taco1.jpg", description: "Marinated pork, pineapple, onions, cilantro." },
+                { name: "Carne Asada Taco", price: 4.00, image: "taco2.jpg", description: "Grilled steak, onions, cilantro, lime." },
+                { name: "Pollo Asado Taco", price: 3.75, image: "taco3.jpg", description: "Grilled chicken, choice of toppings." },
+                { name: "Carnitas Taco", price: 4.25, image: "taco4.jpg", description: "Slow-cooked pulled pork, seasoned." },
+                { name: "Fish Taco", price: 4.50, image: "taco5.jpg", description: "Battered/grilled fish, slaw, creamy sauce." },
+                { name: "Shrimp Taco", price: 4.75, image: "taco6.jpg", description: "Grilled/sautéed shrimp, flavorful spices." },
+                { name: "Vegetarian Taco", price: 3.50, image: "taco7.jpg", description: "Grilled veggies, beans, cheese." },
+                { name: "Lengua Taco", price: 4.50, image: "taco8.jpg", description: "Tender and flavorful beef tongue." },
+                { name: "Barbacoa Taco", price: 4.25, image: "taco9.jpg", description: "Slow-cooked, shredded, rich beef." },
+                { name: "Chorizo Taco", price: 3.75, image: "taco10.jpg", description: "Spicy Mexican sausage, crumbled." },
+                { name: "Classic Hot Dog", price: 3.00, image: "hotdog1.jpg", description: "Beef hot dog, mustard, ketchup, relish." },
+                { name: "Chili Cheese Dog", price: 4.00, image: "hotdog2.jpg", description: "Beef hot dog, chili, shredded cheese." },
+                { name: "New York Style Dog", price: 3.50, image: "hotdog3.jpg", description: "Beef hot dog, sauerkraut, spicy brown mustard." },
+                { name: "Chicago Style Dog", price: 4.50, image: "hotdog4.jpg", description: "Beef hot dog, mustard, relish, onion, tomato, pickle, sport peppers, celery salt." },
+                { name: "Mexican Hot Dog", price: 5.00, image: "hotdog5.jpg", description: "Beef hot dog with jalapeños, onions, tomatoes, and spices." },
+                { name: "Cola", price: 2.00, image: "drink1.jpg", description: "Classic carbonated cola beverage." },
+                { name: "Lemon-Lime Soda", price: 2.00, image: "drink2.jpg", description: "Refreshing lemon and lime flavored soda." },
+                { name: "Orange Soda", price: 2.00, image: "drink3.jpg", description: "Sweet and bubbly orange flavored soda." },
+                { name: "Iced Tea", price: 2.50, image: "drink4.jpg", description: "Chilled black tea, served plain or sweetened." },
+                { name: "Pepsi", price: 2.00, image: "drink5.jpg", description: "Another popular carbonated cola." }
+            ];
+    
+            let rotation = 0;
+            let spinning = false;
             winMessageContainer.classList.remove('show');
-
-            const randomSpin = Math.floor(Math.random() * 3600) + 3600;
-            rotation += randomSpin;
-            wheelContainer.style.transform = `rotate(${rotation}deg)`;
-
-            setTimeout(() => {
-                spinning = false;
-                const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
-                const degreesPerPrize = 360 / prizes.length;
-                const winningIndex = Math.floor((rotation % 360) / degreesPerPrize);
-                const winningPrize = prizes[prizes.length - 1 - winningIndex];
-
-                resultDiv.textContent = `You landed on: ${winningPrize}!`;
-
-                if (winningPrize !== "Try Again") {
-                    winningPrizeSpan.textContent = winningPrize;
-                    winMessageContainer.classList.add('show');
-                } else {
-                    winMessageContainer.classList.remove('show');
-                }
-
-            }, 5000);
-        }
-
-        function createWheelSegments() {
-            const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
-            const numSegments = prizes.length;
-            const degreesPerSegment = 360 / numSegments;
-            wheel.innerHTML = '';
-            for (let i = 0; i < numSegments; i++) {
-                const segment = document.createElement('div');
-                segment.style.position = 'absolute';
-                segment.style.width = '100%';
-                segment.style.height = '100%';
-                segment.style.transformOrigin = 'center center';
-                segment.style.transform = `rotate(${i * degreesPerSegment}deg)`;
-                segment.style.display = 'flex';
-                segment.style.justifyContent = 'flex-end';
-                segment.style.alignItems = 'center';
-                segment.style.paddingRight = '20px';
-                segment.style.fontSize = '0.8em';
-                segment.style.pointerEvents = 'none';
-                segment.textContent = prizes[i];
-                wheel.appendChild(segment);
-            }
-        }
-
-        if (gameNavLink && gamePopupContainer) {
-            gameNavLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                gamePopupContainer.classList.remove('hidden');
-                createWheelSegments();
-                rotation = 0;
-                wheelContainer.style.transform = `rotate(0deg)`;
+    
+            function spinWheel() {
+                if (spinning) return;
+                spinning = true;
                 resultDiv.textContent = '';
                 winMessageContainer.classList.remove('show');
-            });
-        }
-
-        if (closeGameButton && gamePopupContainer) {
-            closeGameButton.addEventListener('click', function() {
-                gamePopupContainer.classList.add('hidden');
-                spinning = false;
-            });
-        }
-
-        if (spinButton && wheelContainer) {
-            spinButton.addEventListener('click', spinWheel);
-        }
-
-        function displaySearchResults(results) {
-            searchResultsContainer.innerHTML = '';
-            if (results.length > 0) {
-                results.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('search-item');
-                    const img = document.createElement('img');
-                    img.src = item.image;
-                    img.alt = item.name;
-                    const h3 = document.createElement('h3');
-                    h3.textContent = item.name;
-                    const pDesc = document.createElement('p');
-                    pDesc.classList.add('description');
-                    pDesc.textContent = item.description;
-                    const pPrice = document.createElement('p');
-                    pPrice.classList.add('price');
-                    pPrice.textContent = `$${item.price.toFixed(2)}`;
-                    const addButton = document.createElement('button');
-                    addButton.classList.add('add-to-cart');
-                    addButton.dataset.name = item.name;
-                    addButton.dataset.price = item.price;
-                    addButton.textContent = 'Add to Cart';
-                    addButton.addEventListener('click', function() {
-                        const itemName = this.dataset.name;
-                        const itemPrice = parseFloat(this.dataset.price);
-                        alert(`Added "${itemName}" to cart for $${itemPrice.toFixed(2)}`);
-                        // In a real application, you would handle adding to a cart array or updating a cart display here.
-                    });
-
-                    itemDiv.appendChild(img);
-                    itemDiv.appendChild(h3);
-                    itemDiv.appendChild(pDesc);
-                    itemDiv.appendChild(pPrice);
-                    itemDiv.appendChild(addButton);
-                    searchResultsContainer.appendChild(itemDiv);
-                });
-                searchResultsContainer.classList.remove('hidden');
-                noSearchResults.classList.add('hidden');
-            } else {
-                searchResultsContainer.classList.add('hidden');
-                noSearchResults.classList.remove('hidden');
+    
+                const randomSpin = Math.floor(Math.random() * 3600) + 3600;
+                rotation += randomSpin;
+                wheelContainer.style.transform = `rotate(${rotation}deg)`;
+    
+                setTimeout(() => {
+                    spinning = false;
+                    const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
+                    const degreesPerPrize = 360 / prizes.length;
+                    const winningIndex = Math.floor((rotation % 360) / degreesPerPrize);
+                    const winningPrize = prizes[prizes.length - 1 - winningIndex];
+    
+                    resultDiv.textContent = `You landed on: ${winningPrize}!`;
+    
+                    if (winningPrize !== "Try Again") {
+                        winningPrizeSpan.textContent = winningPrize;
+                        winMessageContainer.classList.add('show');
+                    } else {
+                        winMessageContainer.classList.remove('show');
+                    }
+    
+                }, 5000);
             }
-        }
-
-        if (searchButton && menuSearchInput) {
-            searchButton.addEventListener('click', function() {
-                const searchTerm = menuSearchInput.value.toLowerCase();
-                const foundItems = menuItems.filter(item => item.name.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm));
-                displaySearchResults(foundItems);
-            });
-
-            menuSearchInput.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    searchButton.click();
+    
+            function createWheelSegments() {
+                const prizes = ["10% OFF", "Free Drink", "5% OFF", "Try Again", "15% OFF", "Free Side"];
+                const numSegments = prizes.length;
+                const degreesPerSegment = 360 / numSegments;
+                wheel.innerHTML = '';
+                for (let i = 0; i < numSegments; i++) {
+                    const segment = document.createElement('div');
+                    segment.style.position = 'absolute';
+                    segment.style.width = '100%';
+                    segment.style.height = '100%';
+                    segment.style.transformOrigin = 'center center';
+                    segment.style.transform = `rotate(${i * degreesPerSegment}deg)`;
+                    segment.style.display = 'flex';
+                    segment.style.justifyContent = 'flex-end';
+                    segment.style.alignItems = 'center';
+                    segment.style.paddingRight = '20px';
+                    segment.style.fontSize = '0.8em';
+                    segment.style.pointerEvents = 'none';
+                    segment.textContent = prizes[i];
+                    wheel.appendChild(segment);
                 }
-            });
-        }
-    });
-</script>
+            }
+    
+            if (gameNavLink && gamePopupContainer) {
+                gameNavLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    gamePopupContainer.classList.remove('hidden');
+                    createWheelSegments();
+                    rotation = 0;
+                    wheelContainer.style.transform = `rotate(0deg)`;
+                    resultDiv.textContent = '';
+                    winMessageContainer.classList.remove('show');
+                });
+            }
+    
+            if (closeGameButton && gamePopupContainer) {
+                closeGameButton.addEventListener('click', function() {
+                    gamePopupContainer.classList.add('hidden');
+                    spinning = false;
+                });
+            }
+    
+            if (spinButton && wheelContainer) {
+                spinButton.addEventListener('click', spinWheel);
+            }
+    
+            function displaySearchResults(results) {
+                searchResultsContainer.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('search-item');
+                        const img = document.createElement('img');
+                        img.src = item.image;
+                        img.alt = item.name;
+                        const h3 = document.createElement('h3');
+                        h3.textContent = item.name;
+                        const pDesc = document.createElement('p');
+                        pDesc.classList.add('description');
+                        pDesc.textContent = item.description;
+                        const pPrice = document.createElement('p');
+                        pPrice.classList.add('price');
+                        pPrice.textContent = `$${item.price.toFixed(2)}`;
+                        const addButton = document.createElement('button');
+                        addButton.classList.add('add-to-cart');
+                        addButton.dataset.name = item.name;
+                        addButton.dataset.price = item.price;
+                        addButton.textContent = 'Add to Cart';
+                        addButton.addEventListener('click', function() {
+                            const itemName = this.dataset.name;
+                            const itemPrice = parseFloat(this.dataset.price);
+                            alert(`Added "${itemName}" to cart for $${itemPrice.toFixed(2)}`);
+                            // In a real application, you would handle adding to a cart array or updating a cart display here.
+                        });
+    
+                        itemDiv.appendChild(img);
+                        itemDiv.appendChild(h3);
+                        itemDiv.appendChild(pDesc);
+                        itemDiv.appendChild(pPrice);
+                        itemDiv.appendChild(addButton);
+                        searchResultsContainer.appendChild(itemDiv);
+                    });
+                    searchResultsContainer.classList.remove('hidden');
+                    noSearchResults.classList.add('hidden');
+                } else {
+                    searchResultsContainer.classList.add('hidden');
+                    noSearchResults.classList.remove('hidden');
+                }
+            }
+    
+            if (searchButton && menuSearchInput) {
+                searchButton.addEventListener('click', function() {
+                    const searchTerm = menuSearchInput.value.toLowerCase();
+                    const foundItems = menuItems.filter(item => item.name.toLowerCase().includes(searchTerm) || item.description.toLowerCase().includes(searchTerm));
+                    displaySearchResults(foundItems);
+                });
+    
+                menuSearchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        searchButton.click();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
 </html>
